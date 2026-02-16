@@ -11,7 +11,6 @@ import com.lambda.client.commons.utils.ConnectionUtils
 import com.lambda.client.gui.clickgui.LambdaClickGui
 import com.lambda.client.module.Category
 import com.lambda.client.module.Module
-import com.lambda.client.module.modules.misc.DiscordRPC
 import com.lambda.client.util.EntityUtils
 import com.lambda.client.util.color.ColorConverter
 import com.lambda.client.util.color.ColorHolder
@@ -74,7 +73,7 @@ object Capes : Module(
         } ?: return
 
         try {
-            var capeType: CapeType? = null
+            //var capeType: CapeType? = null
             val cacheList = gson.fromJson<Array<CapeUser>>(rawJson, type)
             capeUsers.clear()
 
@@ -84,14 +83,14 @@ object Capes : Module(
                         capeUsers[it] = cape
                         if (it == mc.session.profile.id) { // if any of the capeUser's capes match current UUID
                             isPremium = isPremium || capeUser.isPremium // || is to prevent bug if there is somehow a duplicate capeUser
-                            capeType = cape.type
+                            //capeType = cape.type
                         }
                     }
                 }
             }
 
             updated = true
-            DiscordRPC.setCustomIcons(capeType)
+            //DiscordRPC.setCustomIcons(capeType)
             LambdaMod.LOG.info("Capes loaded")
         } catch (e: Exception) {
             LambdaMod.LOG.warn("Failed parsing capes", e)

@@ -32,15 +32,16 @@ object EntityUtils {
     val Entity.prevPosVector get() = Vec3d(this.prevPosX, this.prevPosY, this.prevPosZ)
 
     val Entity.isPassive
-        get() = this is EntityAnimal
+        get() = (this is EntityAnimal
             || this is EntityAgeable
             || this is EntityTameable
             || this is EntityAmbientCreature
-            || this is EntitySquid
+            || this is EntitySquid)
+            && !this.name.contains("Hoglin", ignoreCase = true)
 
-    val Entity.isNeutral get() = isNeutralMob(this) && !isMobAggressive(this)
+    val Entity.isNeutral get() = isNeutralMob(this) && !isMobAggressive(this) && !this.name.contains("Piglin", ignoreCase = true)
 
-    val Entity.isHostile get() = isMobAggressive(this)
+    val Entity.isHostile get() = isMobAggressive(this) || this.name.contains("Hoglin", ignoreCase = true) || this.name.contains("Piglin", ignoreCase = true)
 
     val Entity.isInOrAboveLiquid get() = world.containsAnyLiquid(entityBoundingBox.grow(0.0, -1.0, 0.0).shrink(0.001))
 
@@ -66,7 +67,9 @@ object EntityUtils {
             entity.revengeTarget != null
         }
         else -> {
-            entity.isCreatureType(EnumCreatureType.MONSTER, false)
+            entity.name.contains("Piglin", ignoreCase = true)
+                || entity.name.contains("Hoglin", ignoreCase = true)
+                || entity.isCreatureType(EnumCreatureType.MONSTER, false)
         }
     }
 
