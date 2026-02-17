@@ -39,7 +39,7 @@ object AutoTool : Module(
         }
 
         safeListener<PlayerAttackEvent> {
-            if (swapWeapon && it.entity is EntityLivingBase) equipBestWeapon(preferWeapon)
+            if (swapWeapon && it.entity is EntityLivingBase) equipBestWeapon(this@AutoTool, preferWeapon)
         }
 
         safeListener<TickEvent.ClientTickEvent> {

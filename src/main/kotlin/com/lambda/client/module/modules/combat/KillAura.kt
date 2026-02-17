@@ -83,7 +83,7 @@ object KillAura : Module(
 
             if (target !is EntityLargeFireball) {
                 if (player.getDistance(target) >= range) return@safeListener
-                if (player.scaledHealth > minSwapHealth && autoWeapon) equipBestWeapon(prefer)
+                if (player.scaledHealth > minSwapHealth && autoWeapon) equipBestWeapon(this@KillAura, prefer)
                 if (weaponOnly && !player.heldItemMainhand.item.isWeapon) return@safeListener
                 if (swapDelay > 0 && System.currentTimeMillis() - HotbarManager.swapTime < swapDelay * 50L) return@safeListener
             }

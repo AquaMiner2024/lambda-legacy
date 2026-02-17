@@ -4,10 +4,8 @@ import com.lambda.client.event.LambdaEventBus
 import com.lambda.client.event.SafeClientEvent
 import com.lambda.client.event.events.ConnectionEvent
 import com.lambda.client.event.listener.listener
-import com.lambda.client.util.items.attackDamage
-import com.lambda.client.util.items.filterByStack
-import com.lambda.client.util.items.hotbarSlots
-import com.lambda.client.util.items.swapToSlot
+import com.lambda.client.module.Module
+import com.lambda.client.util.items.*
 import com.lambda.client.util.threads.safeListener
 import net.minecraft.enchantment.Enchantment
 import net.minecraft.enchantment.EnchantmentHelper
@@ -17,6 +15,8 @@ import net.minecraft.entity.monster.EntityMob
 import net.minecraft.entity.player.EntityPlayer
 import net.minecraft.init.MobEffects
 import net.minecraft.item.ItemAxe
+import net.minecraft.item.ItemBlock
+import net.minecraft.item.ItemStack
 import net.minecraft.item.ItemSword
 import net.minecraft.item.ItemTool
 import net.minecraft.util.CombatRules
@@ -84,8 +84,12 @@ object CombatUtils {
         return 1.0f - modifier / 25.0f
     }
 
-    fun SafeClientEvent.equipBestWeapon(preferWeapon: PreferWeapon = PreferWeapon.NONE, allowTool: Boolean = false) {
-        player.hotbarSlots.filterByStack {
+    fun SafeClientEvent.equipBestWeapon(
+        module: Module,
+        preferWeapon: PreferWeapon = PreferWeapon.NONE,
+        allowTool: Boolean = false
+    ) {
+        player.inventorySlots.filterByStack {
             val item = it.item
             item is ItemSword || item is ItemAxe || allowTool && item is ItemTool
         }.maxByOrNull {
@@ -98,8 +102,16 @@ object CombatUtils {
                 preferWeapon == PreferWeapon.AXE && item is ItemAxe -> damage * 10.0f
                 else -> damage
             }
-        }?.let {
-            swapToSlot(it)
+        }?.let { slot ->
+            val hotbarSlot = slot.toHotbarSlotOrNull()
+            if (hotbarSlot != null) {
+                swapToSlot(hotbarSlot)
+            } else {
+                moveToHotbar(module, slot) { slotStack: ItemStack ->
+                    val item = slotStack.item
+                    item !is ItemSword && item !is ItemAxe && item !is ItemTool && item !is ItemBlock
+                }
+            }
         }
     }
 

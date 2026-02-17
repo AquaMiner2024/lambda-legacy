@@ -389,7 +389,7 @@ object CrystalAura : Module(
 
     private fun SafeClientEvent.preExplode(entityID: Int): Boolean {
         if (antiWeakness && player.isPotionActive(MobEffects.WEAKNESS) && !isHoldingTool()) {
-            equipBestWeapon(allowTool = true)
+            equipBestWeapon(this@CrystalAura, allowTool = true)
             resetHotbar()
             return false
         }
