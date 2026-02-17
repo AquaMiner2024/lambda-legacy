@@ -37,7 +37,6 @@ object AutoLogin : Module(
     private var lastNetworkHash = -1
 
     init {
-        LambdaMod.LOG.info("[AutoLogin] Module Loaded")
         onDisable {
             stage = 0
             lastNetworkHash = -1
@@ -50,7 +49,7 @@ object AutoLogin : Module(
                     stage = 1
                     lastNetworkHash = currentHash
                     timer.reset()
-                    MessageSendHelper.sendChatMessage("[AutoLogin] AutoLogin Start")
+                    MessageSendHelper.sendChatMessage("[$name] AutoLogin Start")
                 }
             }
         }
@@ -63,11 +62,11 @@ object AutoLogin : Module(
                         val command = file.readText().trim()
                         if (command.isNotEmpty()) {
                             player.sendChatMessage(command)
-                            MessageSendHelper.sendChatMessage("[AutoLogin] Login command send")
+                            MessageSendHelper.sendChatMessage("[$name] Login command send")
                         }
                     } else {
                         file.writeText("/l your_password")
-                        MessageSendHelper.sendChatMessage("[AutoLogin] Create command file, path ${file.absolutePath}")
+                        MessageSendHelper.sendChatMessage("[$name] Create command file, path ${file.absolutePath}")
                     }
                 }
                 stage = 2
@@ -80,7 +79,7 @@ object AutoLogin : Module(
                     swapToSlot(targetSlot)
                     if (player.heldItemMainhand.item == Items.COMPASS) {
                         connection.sendPacket(CPacketPlayerTryUseItem(EnumHand.MAIN_HAND))
-                        MessageSendHelper.sendChatMessage("[AutoLogin] Try to use Compass")
+                        MessageSendHelper.sendChatMessage("[$name] Try to use Compass")
                     }
                     stage = 3
                     defaultScope.launch {
@@ -95,7 +94,7 @@ object AutoLogin : Module(
                                     ClickType.PICKUP,
                                     mc.player
                                 )
-                                MessageSendHelper.sendChatMessage("[AutoLogin] Try to click")
+                                MessageSendHelper.sendChatMessage("[$name] Try to click")
                                 return@launch
                             }
                             delay(1000)
