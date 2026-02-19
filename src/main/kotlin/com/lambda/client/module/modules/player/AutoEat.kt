@@ -86,7 +86,12 @@ object AutoEat : Module(
                 else -> PreferredFood.NORMAL
             }
 
-            if (shouldEat(preferredFood)) {
+            val shouldEat = if (eating) {
+                player.foodStats.foodLevel < 20 || preferredFood != PreferredFood.NORMAL
+            } else {
+                shouldEat(preferredFood)
+            }
+            if (shouldEat) {
                 when {
                     isValidAndPreferred(player.heldItemOffhand, preferredFood) -> eat(EnumHand.OFF_HAND)
                     isValidAndPreferred(player.heldItemMainhand, preferredFood) -> eat(EnumHand.MAIN_HAND)

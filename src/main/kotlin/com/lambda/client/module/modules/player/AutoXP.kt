@@ -46,7 +46,12 @@ object AutoXP : Module(
         }
         safeListener<TickEvent.ClientTickEvent> {
             if (it.phase != TickEvent.Phase.START || !player.isEntityAlive) return@safeListener
-            if (needsRepair()) {
+            val shouldBeRepairing = if (isRepairing) {
+                needsRepair(100)
+            } else {
+                needsRepair(threshold)
+            }
+            if (shouldBeRepairing) {
                 val hotbarSlot = player.hotbarSlots.firstItem(Items.EXPERIENCE_BOTTLE)
                 if (hotbarSlot != null) {
                     if (!isRepairing) {
@@ -68,16 +73,14 @@ object AutoXP : Module(
                         }
                     }
                 }
-            } else {
-                if (isRepairing) {
-                    stopRepaiting()
-                    swapBack()
-                }
+            } else if (isRepairing) {
+                stopRepaiting()
+                swapBack()
             }
         }
     }
 
-    private fun SafeClientEvent.needsRepair(): Boolean {
+    private fun SafeClientEvent.needsRepair(targetPercent: Int): Boolean {
         val armorSlots = listOf(
             EntityEquipmentSlot.HEAD,
             EntityEquipmentSlot.CHEST,
@@ -86,9 +89,9 @@ object AutoXP : Module(
         )
         return armorSlots.any { slot ->
             val stack = player.getItemStackFromSlot(slot)
-            if (!stack.isEmpty && stack.isItemStackDamageable) {
+            if (!stack.isEmpty && stack.isItemStackDamageable && EnchantmentHelper.getEnchantmentLevel(Enchantments.MENDING,stack) > 0) {
                 val damagePercent = (stack.maxDamage - stack.itemDamage).toFloat() / stack.maxDamage.toFloat() * 100f
-                damagePercent < threshold && EnchantmentHelper.getEnchantmentLevel(Enchantments.MENDING,stack) > 0
+                damagePercent < targetPercent
             } else {
                 false
             }
