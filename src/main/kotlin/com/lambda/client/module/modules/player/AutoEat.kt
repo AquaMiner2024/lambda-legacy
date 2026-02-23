@@ -131,11 +131,13 @@ object AutoEat : Module(
 
     private fun startEating() {
         if (pauseBaritone) pauseBaritone()
+        AutoXP.pause()
         eating = true
     }
 
     private fun stopEating() {
         unpauseBaritone()
+        AutoXP.unpause()
 
         eating = false
     }
