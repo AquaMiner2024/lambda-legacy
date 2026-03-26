@@ -85,6 +85,7 @@
     "render.MixinTileEntityRendererDispatcher",
     "render.MixinTileEntitySignRenderer",
     "render.MixinTileRendererDispatcher",
+      "render.MixinViewFrustum",
     "render.MixinVisGraph",
     "world.MixinBlock",
     "world.MixinBlockDragonEgg",
